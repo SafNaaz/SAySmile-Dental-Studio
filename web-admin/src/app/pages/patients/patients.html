@@ -1,7 +1,40 @@
 <div class="page-container">
   <div class="page-header">
     <h1>👥 Patients Directory</h1>
-    <button class="primary-btn">+ Add Patient</button>
+    <button class="primary-btn" *ngIf="!authService.hasAnyRole(['PATIENT'])" (click)="toggleForm()">
+      {{ showForm ? 'Close' : '+ Add Patient' }}
+    </button>
+  </div>
+
+  <div class="form-card" *ngIf="showForm">
+    <h3>Register New Patient</h3>
+    <form (ngSubmit)="addPatient()" #patientForm="ngForm">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" [(ngModel)]="newPatient.fullName" name="fullName" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label>Phone Number (Username)</label>
+          <input type="text" [(ngModel)]="newPatient.username" name="username" required placeholder="10-digit mobile">
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <select [(ngModel)]="newPatient.gender" name="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="date" [(ngModel)]="newPatient.dateOfBirth" name="dateOfBirth">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" [disabled]="!patientForm.form.valid">Create Record</button>
+      </div>
+    </form>
   </div>
 
   <div class="table-card">
@@ -27,7 +60,8 @@
           <td>{{ patient.dateOfBirth || 'N/A' }}</td>
           <td>
             <button class="action-btn view">View</button>
-            <button class="action-btn edit">Edit</button>
+            <button class="action-btn edit" *ngIf="!authService.hasAnyRole(['PATIENT'])">Edit</button>
+            <button class="action-btn delete" *ngIf="!authService.hasAnyRole(['PATIENT'])" (click)="deletePatient(patient.id || patient.id)">Delete</button>
           </td>
         </tr>
         <tr *ngIf="patients.length === 0">

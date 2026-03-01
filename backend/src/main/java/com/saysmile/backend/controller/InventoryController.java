@@ -19,4 +19,25 @@ public class InventoryController {
     public List<InventoryItem> getAllInventory() {
         return inventoryRepository.findAll();
     }
+
+    @PostMapping
+    public InventoryItem createItem(@RequestBody InventoryItem item) {
+        return inventoryRepository.save(item);
+    }
+
+    @PutMapping("/{id}")
+    public InventoryItem updateItem(@PathVariable Long id, @RequestBody InventoryItem itemDetails) {
+        InventoryItem item = inventoryRepository.findById(id).orElseThrow();
+        item.setName(itemDetails.getName());
+        item.setCategory(itemDetails.getCategory());
+        item.setStockQuantity(itemDetails.getStockQuantity());
+        item.setMinimumThreshold(itemDetails.getMinimumThreshold());
+        item.setCostPerUnit(itemDetails.getCostPerUnit());
+        return inventoryRepository.save(item);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteItem(@PathVariable Long id) {
+        inventoryRepository.deleteById(id);
+    }
 }

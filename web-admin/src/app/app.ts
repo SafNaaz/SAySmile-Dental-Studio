@@ -12,4 +12,9 @@ import { CommonModule } from '@angular/common';
 })
 export class App {
   authService = inject(AuthService);
+  isSidebarOpen = false;
+
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
 }

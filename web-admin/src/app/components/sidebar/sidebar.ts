@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth';
@@ -11,6 +11,11 @@ import { AuthService } from '../../services/auth';
 })
 export class Sidebar {
   public authService = inject(AuthService);
+  @Output() closeSidebar = new EventEmitter<void>();
+
+  onLinkClick() {
+    this.closeSidebar.emit();
+  }
 
   hasRole(roles: string[]): boolean {
     return this.authService.hasAnyRole(roles);

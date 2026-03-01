@@ -6,27 +6,27 @@
   
   <ul class="nav-links">
     <li *ngIf="hasRole(['SUPER_ADMIN', 'DOCTOR', 'FRONT_DESK', 'PATIENT'])">
-      <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="onLinkClick()">
         <span>📊</span> Dashboard
       </a>
     </li>
     <li *ngIf="hasRole(['SUPER_ADMIN', 'DOCTOR', 'FRONT_DESK'])">
-      <a routerLink="/patients" routerLinkActive="active">
+      <a routerLink="/patients" routerLinkActive="active" (click)="onLinkClick()">
         <span>👥</span> Patients
       </a>
     </li>
     <li *ngIf="hasRole(['SUPER_ADMIN', 'DOCTOR', 'FRONT_DESK', 'PATIENT'])">
-      <a routerLink="/appointments" routerLinkActive="active">
+      <a routerLink="/appointments" routerLinkActive="active" (click)="onLinkClick()">
         <span>📅</span> Appointments
       </a>
     </li>
     <li *ngIf="hasRole(['SUPER_ADMIN', 'DOCTOR', 'HR'])">
-      <a routerLink="/inventory" routerLinkActive="active">
+      <a routerLink="/inventory" routerLinkActive="active" (click)="onLinkClick()">
         <span>📦</span> Inventory
       </a>
     </li>
     <li *ngIf="hasRole(['SUPER_ADMIN', 'FRONT_DESK'])">
-      <a routerLink="/billing" routerLinkActive="active">
+      <a routerLink="/billing" routerLinkActive="active" (click)="onLinkClick()">
         <span>💳</span> Billing & Invoices
       </a>
     </li>

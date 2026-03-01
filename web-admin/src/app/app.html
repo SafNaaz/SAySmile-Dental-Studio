@@ -1,5 +1,18 @@
-<div class="app-layout" *ngIf="authService.currentUser$ | async as currentUser; else unauthLayout">
-  <app-sidebar class="app-sidebar"></app-sidebar>
+<div class="app-layout" 
+     [class.sidebar-open]="isSidebarOpen"
+     *ngIf="authService.currentUser$ | async as currentUser; else unauthLayout">
+  
+  <!-- Mobile Toggle Header -->
+  <header class="mobile-header">
+    <div class="mobile-logo">🦷 SAySmile</div>
+    <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
+  </header>
+
+  <app-sidebar class="app-sidebar" (closeSidebar)="isSidebarOpen = false"></app-sidebar>
+  
+  <!-- Sidebar Overlay for mobile -->
+  <div class="sidebar-overlay" (click)="toggleSidebar()" *ngIf="isSidebarOpen"></div>
+
   <main class="app-main">
     <router-outlet></router-outlet>
   </main>

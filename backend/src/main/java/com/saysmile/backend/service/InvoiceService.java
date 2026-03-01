@@ -21,4 +21,12 @@ public class InvoiceService {
     public Double getTotalRevenue(LocalDateTime start, LocalDateTime end) {
         return invoiceRepository.sumTotalRevenueBetween(start, end);
     }
+
+    public List<Invoice> getInvoicesByPatient(String username) {
+        return invoiceRepository.findByPatient_User_Username(username);
+    }
+
+    public Invoice createInvoice(Invoice invoice) {
+        return invoiceRepository.save(invoice);
+    }
 }

@@ -12,6 +12,8 @@ import java.util.List;
 public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     List<Invoice> findByPatientId(Long patientId);
 
+    List<Invoice> findByPatient_User_Username(String username);
+
     List<Invoice> findByPaymentStatus(String paymentStatus);
 
     // For revenue analytics

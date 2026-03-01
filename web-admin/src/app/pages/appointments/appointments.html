@@ -1,7 +1,42 @@
 <div class="page-container">
   <div class="page-header">
     <h1>📅 Appointments</h1>
-    <button class="primary-btn">+ Book Appointment</button>
+    <button class="primary-btn" (click)="toggleForm()">{{ showForm ? 'Close' : '+ Book Appointment' }}</button>
+  </div>
+
+  <div class="form-card" *ngIf="showForm">
+    <h3>Book New Appointment</h3>
+    <form (ngSubmit)="bookAppointment()" #apptForm="ngForm">
+      <div class="form-grid">
+        <div class="form-group" *ngIf="!authService.hasAnyRole(['PATIENT'])">
+          <label>Select Patient</label>
+          <select [(ngModel)]="newAppointment.patient.id" name="patientId" required>
+            <option *ngFor="let p of patients" [value]="p.id">{{ p.user.fullName }} ({{ p.user.username }})</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Procedure Type</label>
+          <select [(ngModel)]="newAppointment.procedureType" name="procedureType" required>
+            <option value="Consultation">Consultation</option>
+            <option value="Root Canal">Root Canal</option>
+            <option value="Scaling">Scaling</option>
+            <option value="Extraction">Extraction</option>
+            <option value="Filling">Filling</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date & Time</label>
+          <input type="datetime-local" [(ngModel)]="newAppointment.appointmentTime" name="appointmentTime" required>
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <input type="text" [(ngModel)]="newAppointment.notes" name="notes" placeholder="Optional notes">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" [disabled]="!apptForm.form.valid">Confirm Booking</button>
+      </div>
+    </form>
   </div>
 
   <div class="table-card">

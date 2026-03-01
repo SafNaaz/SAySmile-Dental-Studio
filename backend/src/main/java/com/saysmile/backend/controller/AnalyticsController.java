@@ -17,10 +17,21 @@ public class AnalyticsController {
 
     private final AppointmentService appointmentService;
     private final InvoiceService invoiceService;
+    private final com.saysmile.backend.repository.UserRepository userRepository;
 
     @GetMapping("/dashboard")
-    public Map<String, Object> getDashboardData() {
+    public Map<String, Object> getDashboardData(org.springframework.security.core.Authentication authentication) {
+        String username = authentication.getName();
+        com.saysmile.backend.entity.User user = userRepository.findByUsername(username).orElseThrow();
+
         Map<String, Object> data = new HashMap<>();
+
+        if (user.getRole() == com.saysmile.backend.entity.Role.PATIENT) {
+            // Patients only see their own summary (e.g. total spent, next appt)
+            data.put("monthlyRevenue", 0.0);
+            data.put("procedureTrends", java.util.Collections.emptyList());
+            return data;
+        }
 
         // Calculate for the current month roughly
         LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0);

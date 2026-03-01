@@ -17,6 +17,10 @@ public class AppointmentService {
         return appointmentRepository.findAll();
     }
 
+    public List<Appointment> getAppointmentsByPatient(String username) {
+        return appointmentRepository.findByPatient_User_Username(username);
+    }
+
     public Appointment createAppointment(Appointment appointment) {
         return appointmentRepository.save(appointment);
     }

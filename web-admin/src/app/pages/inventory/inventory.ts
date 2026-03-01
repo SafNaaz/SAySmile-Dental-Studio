@@ -1,21 +1,58 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-inventory',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './inventory.html',
   styleUrl: './inventory.css'
 })
 export class Inventory implements OnInit {
   http = inject(HttpClient);
   inventory: any[] = [];
+  showForm = false;
+  newItem = {
+    name: '',
+    category: '',
+    stockQuantity: 0,
+    minimumThreshold: 5,
+    costPerUnit: 0
+  };
 
   ngOnInit(): void {
+    this.loadInventory();
+  }
+
+  loadInventory() {
     this.http.get<any[]>('http://localhost:8080/api/inventory').subscribe({
       next: (data) => this.inventory = data,
       error: (err) => console.error('Error fetching inventory', err)
     });
+  }
+
+  toggleForm() {
+    this.showForm = !this.showForm;
+  }
+
+  addItem() {
+    this.http.post('http://localhost:8080/api/inventory', this.newItem).subscribe({
+      next: () => {
+        this.loadInventory();
+        this.showForm = false;
+        this.newItem = { name: '', category: '', stockQuantity: 0, minimumThreshold: 5, costPerUnit: 0 };
+      },
+      error: (err) => console.error('Error adding item', err)
+    });
+  }
+
+  deleteItem(id: number) {
+    if (confirm('Are you sure you want to delete this item?')) {
+      this.http.delete(`http://localhost:8080/api/inventory/${id}`).subscribe({
+        next: () => this.loadInventory(),
+        error: (err) => console.error('Error deleting item', err)
+      });
+    }
   }
 }
