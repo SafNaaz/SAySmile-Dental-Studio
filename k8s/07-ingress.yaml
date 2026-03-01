@@ -37,6 +37,42 @@ spec:
                 port:
                   number: 8080
 
+    # ── pgAdmin Dashboard (Postgres GUI) ────────────────────────────────────
+    - host: db.saysmile.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pgadmin-svc
+                port:
+                  number: 80
+
+    # ── phpLDAPadmin Dashboard (LDAP GUI) ────────────────────────────────────
+    - host: directory.saysmile.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: phpldapadmin-svc
+                port:
+                  number: 80
+
+    # ── RedisInsight Dashboard (Redis GUI) ───────────────────────────────────
+    - host: cache.saysmile.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: redisinsight-svc
+                port:
+                  number: 80
+
   # ── TLS (Uncomment and configure cert-manager / your cert Secret) ──────────
   # tls:
   #   - hosts:

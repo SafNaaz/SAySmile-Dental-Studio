@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: backend
-          # Local image loaded via: minikube image load saysmile/backend:v2
-          image: saysmile/backend:v2
+          # Local image loaded via: minikube image load saysmile/backend:v3
+          image: saysmile/backend:v3
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
