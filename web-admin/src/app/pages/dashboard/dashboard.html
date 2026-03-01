@@ -45,10 +45,24 @@
       </div>
 
       <div class="chart-container">
-        <h2>Upcoming Appointments Today</h2>
-        <div class="chart-placeholder">
-          <p>No appointments scheduled today.</p>
+        <h2>Upcoming Appointments</h2>
+        <div class="chart-placeholder" *ngIf="!dashboardData.upcomingAppointments || dashboardData.upcomingAppointments.length === 0">
+          <p>No appointments scheduled soon.</p>
         </div>
+        <ul class="trend-list" *ngIf="dashboardData.upcomingAppointments?.length > 0">
+          <li *ngFor="let appt of dashboardData.upcomingAppointments" style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="display: block; color: #0f172a;">{{ appt.patient?.user?.fullName }}</strong>
+                <span style="font-size: 13px; color: #64748b;">{{ appt.procedureType }}</span>
+              </div>
+              <div style="text-align: right;">
+                <span style="display: block; font-weight: 600; color: #4f46e5;">{{ appt.appointmentTime | date:'h:mm a' }}</span>
+                <span style="font-size: 12px; color: #94a3b8;">{{ appt.appointmentTime | date:'MMM d' }}</span>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

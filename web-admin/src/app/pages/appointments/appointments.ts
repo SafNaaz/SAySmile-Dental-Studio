@@ -25,6 +25,9 @@ export class Appointments implements OnInit {
     doctor: { id: 1 } // Default Dr. Aysha
   };
 
+  editMode = false;
+  editAppointmentId: number | null = null;
+
   ngOnInit(): void {
     this.loadAppointments();
     if (!this.authService.hasAnyRole(['PATIENT'])) {
@@ -51,13 +54,52 @@ export class Appointments implements OnInit {
   }
 
   bookAppointment() {
-    this.http.post('http://localhost:8080/api/appointments', this.newAppointment).subscribe({
-      next: () => {
-        this.loadAppointments();
-        this.showForm = false;
-        this.newAppointment = { procedureType: '', appointmentTime: '', notes: '', patient: { id: null }, doctor: { id: 1 } };
-      },
-      error: (err) => console.error('Error booking appointment', err)
-    });
+    if (this.editMode && this.editAppointmentId) {
+      this.http.put(`http://localhost:8080/api/appointments/${this.editAppointmentId}`, this.newAppointment).subscribe({
+        next: () => {
+          this.loadAppointments();
+          this.resetForm();
+        },
+        error: (err) => console.error('Error updating appointment', err)
+      });
+    } else {
+      this.http.post('http://localhost:8080/api/appointments', this.newAppointment).subscribe({
+        next: () => {
+          this.loadAppointments();
+          this.resetForm();
+        },
+        error: (err) => console.error('Error booking appointment', err)
+      });
+    }
+  }
+
+  editAppointment(appt: any) {
+    this.editMode = true;
+    this.editAppointmentId = appt.id;
+    this.showForm = true;
+    this.newAppointment = {
+      procedureType: appt.procedureType,
+      appointmentTime: appt.appointmentTime,
+      notes: appt.notes,
+      status: appt.status, // Preserve current status
+      patient: { id: appt.patient?.id },
+      doctor: { id: appt.doctor?.id }
+    };
+  }
+
+  cancelAppointment(id: number) {
+    if (confirm('Are you sure you want to cancel this appointment?')) {
+      this.http.delete(`http://localhost:8080/api/appointments/${id}`).subscribe({
+        next: () => this.loadAppointments(),
+        error: (err) => console.error('Error cancelling appointment', err)
+      });
+    }
+  }
+
+  resetForm() {
+    this.showForm = false;
+    this.editMode = false;
+    this.editAppointmentId = null;
+    this.newAppointment = { procedureType: '', appointmentTime: '', notes: '', patient: { id: null }, doctor: { id: 1 } };
   }
 }

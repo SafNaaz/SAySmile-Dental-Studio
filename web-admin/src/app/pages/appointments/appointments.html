@@ -5,10 +5,10 @@
   </div>
 
   <div class="form-card" *ngIf="showForm">
-    <h3>Book New Appointment</h3>
+    <h3>{{ editMode ? 'Reschedule Appointment' : 'Book New Appointment' }}</h3>
     <form (ngSubmit)="bookAppointment()" #apptForm="ngForm">
       <div class="form-grid">
-        <div class="form-group" *ngIf="!authService.hasAnyRole(['PATIENT'])">
+        <div class="form-group" *ngIf="!authService.hasAnyRole(['PATIENT']) && !editMode">
           <label>Select Patient</label>
           <select [(ngModel)]="newAppointment.patient.id" name="patientId" required>
             <option *ngFor="let p of patients" [value]="p.id">{{ p.user.fullName }} ({{ p.user.username }})</option>
@@ -34,7 +34,9 @@
         </div>
       </div>
       <div class="form-actions">
-        <button type="submit" class="submit-btn" [disabled]="!apptForm.form.valid">Confirm Booking</button>
+        <button type="submit" class="submit-btn" [disabled]="!apptForm.form.valid">
+          {{ editMode ? 'Update Appointment' : 'Confirm Booking' }}
+        </button>
       </div>
     </form>
   </div>
@@ -59,8 +61,8 @@
           <td>{{ appt.procedureType }}</td>
           <td><span class="status-badge" [ngClass]="appt.status.toLowerCase()">{{ appt.status }}</span></td>
           <td>
-            <button class="action-btn edit">Reschedule</button>
-            <button class="action-btn delete">Cancel</button>
+            <button class="action-btn edit" (click)="editAppointment(appt)">Reschedule</button>
+            <button class="action-btn delete" (click)="cancelAppointment(appt.id)">Cancel</button>
           </td>
         </tr>
         <tr *ngIf="appointments.length === 0">
