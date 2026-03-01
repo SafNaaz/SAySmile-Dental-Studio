@@ -37,29 +37,30 @@
           <p>No procedure data available yet. Add some appointments!</p>
         </div>
         <ul class="trend-list" *ngIf="dashboardData.procedureTrends?.length > 0">
-          <li *ngFor="let trend of dashboardData.procedureTrends" style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between;">
-            <span class="trend-name" style="font-weight: 500;">{{ trend[0] }}</span>
-            <span class="trend-count" style="color: #64748b;">{{ trend[1] }} procedures</span>
+          <li *ngFor="let trend of dashboardData.procedureTrends" class="trend-item">
+            <span class="trend-name" style="font-weight: 700; color: #fff;">{{ trend[0] }}</span>
+            <span class="trend-count" style="color: #64748b; font-size: 14px;">{{ trend[1] }} procedures</span>
           </li>
         </ul>
       </div>
 
       <div class="chart-container">
-        <h2>Upcoming Appointments</h2>
+        <h2>📅 Upcoming Appointments</h2>
         <div class="chart-placeholder" *ngIf="!dashboardData.upcomingAppointments || dashboardData.upcomingAppointments.length === 0">
           <p>No appointments scheduled soon.</p>
         </div>
         <ul class="trend-list" *ngIf="dashboardData.upcomingAppointments?.length > 0">
-          <li *ngFor="let appt of dashboardData.upcomingAppointments" style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+          <li *ngFor="let appt of dashboardData.upcomingAppointments" class="trend-item">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="width: 44px; height: 44px; background: rgba(99, 102, 241, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;">👤</div>
               <div>
-                <strong style="display: block; color: #0f172a;">{{ appt.patient?.user?.fullName }}</strong>
-                <span style="font-size: 13px; color: #64748b;">{{ appt.procedureType }}</span>
+                <strong style="display: block; color: #fff; font-size: 16px;">{{ appt.patient?.user?.fullName }}</strong>
+                <span style="font-size: 13px; color: #94a3b8; font-weight: 600;">{{ appt.procedureType }}</span>
               </div>
-              <div style="text-align: right;">
-                <span style="display: block; font-weight: 600; color: #4f46e5;">{{ appt.appointmentTime | date:'h:mm a' }}</span>
-                <span style="font-size: 12px; color: #94a3b8;">{{ appt.appointmentTime | date:'MMM d' }}</span>
-              </div>
+            </div>
+            <div style="text-align: right;">
+              <span style="display: block; font-weight: 800; color: #a5b4fc; font-size: 15px;">{{ appt.appointmentTime | date:'h:mm a' }}</span>
+              <span style="font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase;">{{ appt.appointmentTime | date:'MMM d' }}</span>
             </div>
           </li>
         </ul>

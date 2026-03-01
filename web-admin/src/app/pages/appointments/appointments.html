@@ -32,6 +32,14 @@
           <label>Notes</label>
           <input type="text" [(ngModel)]="newAppointment.notes" name="notes" placeholder="Optional notes">
         </div>
+        <div class="form-group" *ngIf="editMode">
+          <label>Status</label>
+          <select [(ngModel)]="newAppointment.status" name="status">
+            <option value="SCHEDULED">Scheduled</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </div>
       </div>
       <div class="form-actions">
         <button type="submit" class="submit-btn" [disabled]="!apptForm.form.valid">
