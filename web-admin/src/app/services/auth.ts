@@ -32,6 +32,18 @@ export class AuthService {
     );
   }
 
+  signup(data: any) {
+    return this.http.post<any>('http://localhost:8080/api/auth/signup', data).pipe(
+      tap(res => {
+        if (res && res.token) {
+          localStorage.setItem('saysmile_user', JSON.stringify(res));
+          this.currentUserSubject.next(res);
+          this.router.navigate(['/dashboard']);
+        }
+      })
+    );
+  }
+
   logout() {
     const user = this.currentUserSubject.value;
     if (user && user.username) {
@@ -45,5 +57,16 @@ export class AuthService {
   getToken(): string | null {
     const user = this.currentUserSubject.value;
     return user ? user.token : null;
+  }
+
+  getRole(): string | null {
+    const user = this.currentUserSubject.value;
+    return user ? user.role : null;
+  }
+
+  hasAnyRole(roles: string[]): boolean {
+    const currentRole = this.getRole();
+    if (!currentRole) return false;
+    return roles.includes(currentRole);
   }
 }

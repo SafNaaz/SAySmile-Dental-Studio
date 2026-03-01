@@ -70,7 +70,8 @@ public class AuthController {
 
             // Fallback DB auth for staff (since we seeded Dr. Aysha to DB)
             Optional<User> userOpt = userRepository.findByUsername(request.getUsername());
-            if (userOpt.isPresent() && userOpt.get().getPassword().equals(request.getPassword())) {
+            if (userOpt.isPresent() && userOpt.get().getPassword().equals(request.getPassword())
+                    && userOpt.get().getRole() != Role.PATIENT) {
                 return performLogin(userOpt.get());
             }
 
@@ -78,7 +79,8 @@ public class AuthController {
         } else {
             // Patient login via DB
             Optional<User> userOpt = userRepository.findByUsername(request.getUsername());
-            if (userOpt.isPresent() && userOpt.get().getPassword().equals(request.getPassword())) {
+            if (userOpt.isPresent() && userOpt.get().getPassword().equals(request.getPassword())
+                    && userOpt.get().getRole() == Role.PATIENT) {
                 return performLogin(userOpt.get());
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");

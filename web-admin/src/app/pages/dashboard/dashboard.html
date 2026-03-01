@@ -1,17 +1,17 @@
 <main class="dashboard-container">
-  <header class="dashboard-header">
+  <header class="dashboard-header" *ngIf="authService.currentUser$ | async as user">
     <h1>🦷 SAySmile Dental Studio Dashboard</h1>
     <div class="user-info">
-      <span class="role-badge super-admin">Super Admin</span>
-      <span>Dr. Aysha & Er. Safnas</span>
+      <span class="role-badge" [ngClass]="user.role.toLowerCase()">{{ user.role.replace('_', ' ') }}</span>
+      <span>{{ user.fullName || user.username }}</span>
     </div>
   </header>
 
   <div class="content" *ngIf="dashboardData; else loading">
     
-    <!-- Top Stats Row -->
-    <div class="stats-grid">
-      <div class="stat-card revenue">
+    <!-- Top Stats Row (Hidden from PATIENT) -->
+    <div class="stats-grid" *ngIf="authService.hasAnyRole(['SUPER_ADMIN', 'DOCTOR', 'FRONT_DESK', 'HR'])">
+      <div class="stat-card revenue" *ngIf="authService.hasAnyRole(['SUPER_ADMIN', 'FRONT_DESK'])">
         <h3>Monthly Revenue</h3>
         <p class="stat-value">₹ {{ dashboardData.monthlyRevenue | number:'1.2-2' }}</p>
       </div>
@@ -22,7 +22,7 @@
         <p class="stat-subtitle">+12% from last month</p>
       </div>
 
-      <div class="stat-card alert">
+      <div class="stat-card alert" *ngIf="authService.hasAnyRole(['SUPER_ADMIN', 'DOCTOR', 'HR'])">
         <h3>Inventory Alerts</h3>
         <p class="stat-value">3 items</p>
         <p class="stat-subtitle">Low stock detected</p>
@@ -31,7 +31,7 @@
 
     <!-- Charts & Analytics Row -->
     <div class="analytics-grid">
-      <div class="chart-container">
+      <div class="chart-container" *ngIf="authService.hasAnyRole(['SUPER_ADMIN', 'DOCTOR'])">
         <h2>Pathology & Disease Trends</h2>
         <div class="chart-placeholder" *ngIf="dashboardData.procedureTrends?.length === 0">
           <p>No procedure data available yet. Add some appointments!</p>

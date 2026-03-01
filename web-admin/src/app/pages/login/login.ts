@@ -14,26 +14,41 @@ export class Login {
   loginData = {
     username: '',
     password: '',
+    fullName: '',
     userType: 'STAFF'
   };
+
+  isSignupMode = false;
 
   authService = inject(AuthService);
   errorMessage = '';
 
   onSubmit() {
     this.errorMessage = '';
-    this.authService.login(this.loginData).subscribe({
+    const action = this.isSignupMode 
+      ? this.authService.signup(this.loginData) 
+      : this.authService.login(this.loginData);
+      
+    action.subscribe({
       next: () => {
         // success is handled in service where it navigates
       },
       error: (err) => {
-        this.errorMessage = 'Invalid username or password.';
+        this.errorMessage = this.isSignupMode ? 'Could not create account. Username might be taken.' : 'Invalid username or password.';
         console.error(err);
       }
     });
   }
 
+  toggleMode() {
+    this.isSignupMode = !this.isSignupMode;
+    this.errorMessage = '';
+  }
+
   setRole(role: string) {
     this.loginData.userType = role;
+    if (role === 'STAFF') {
+      this.isSignupMode = false;
+    }
   }
 }
