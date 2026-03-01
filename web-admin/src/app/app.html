@@ -1,6 +1,10 @@
-<div class="app-layout">
+<div class="app-layout" *ngIf="authService.currentUser$ | async as currentUser; else unauthLayout">
   <app-sidebar class="app-sidebar"></app-sidebar>
   <main class="app-main">
     <router-outlet></router-outlet>
   </main>
 </div>
+
+<ng-template #unauthLayout>
+  <router-outlet></router-outlet>
+</ng-template>

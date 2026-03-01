@@ -5,11 +5,15 @@ import { Appointments } from './pages/appointments/appointments';
 import { Inventory } from './pages/inventory/inventory';
 import { Billing } from './pages/billing/billing';
 
+import { authGuard } from './guards/auth';
+import { Login } from './pages/login/login';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: Dashboard },
-  { path: 'patients', component: Patients },
-  { path: 'appointments', component: Appointments },
-  { path: 'inventory', component: Inventory },
-  { path: 'billing', component: Billing }
+  { path: 'login', component: Login },
+  { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
+  { path: 'patients', component: Patients, canActivate: [authGuard] },
+  { path: 'appointments', component: Appointments, canActivate: [authGuard] },
+  { path: 'inventory', component: Inventory, canActivate: [authGuard] },
+  { path: 'billing', component: Billing, canActivate: [authGuard] }
 ];
