@@ -1,48 +1,95 @@
-<div class="login-wrapper">
-  <div class="login-card">
-    <div class="logo-container">
-      <span class="logo-icon">🦷</span>
-      <h2>SAySmile Dental Studio</h2>
+<div class="login-page">
+  <!-- Left Side: Clinic Branding & Info -->
+  <div class="login-info-side">
+    <div class="info-overlay"></div>
+    <div class="info-content">
+      <div class="brand">
+        <span class="brand-bolt">🦷</span>
+        <h1 class="brand-name">SAySmile</h1>
+      </div>
+      
+      <div class="hero-text">
+        <h2 class="hero-title">Prevention <span class="highlight">First.</span></h2>
+        <p class="hero-subtitle">Experience modern dentistry designed for your comfort. We prioritize proactive care to keep your smile healthy and radiant for a lifetime.</p>
+      </div>
+
+      <div class="features">
+        <div class="feature-item">
+          <span class="feature-icon">✨</span>
+          <div>
+            <h3>Advanced Technology</h3>
+            <p>Digital diagnostics and precise treatments.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🛡️</span>
+          <div>
+            <h3>Secure Records</h3>
+            <p>Your health data is protected and private.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote-card">
+        <p>"A healthy smile is a beautiful smile. Let's make prevention your first choice."</p>
+        <span class="quote-author">— Dr. Aysha, Lead Dentist</span>
+      </div>
     </div>
+  </div>
 
-    <div class="role-selector">
-      <button class="role-tab" [class.active]="loginData.userType === 'STAFF'" (click)="setRole('STAFF')">Staff Login</button>
-      <button class="role-tab" [class.active]="loginData.userType === 'PATIENT'" (click)="setRole('PATIENT')">Patient Login</button>
-    </div>
-
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-      <div class="form-group" *ngIf="isSignupMode">
-        <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" name="fullName" [(ngModel)]="loginData.fullName" [required]="isSignupMode" placeholder="Enter your full name">
+  <!-- Right Side: Login Form -->
+  <div class="login-form-side">
+    <div class="login-card">
+      <div class="card-header">
+        <h2>{{ loginData.userType === 'PATIENT' ? 'Patient Portal' : 'Staff Portal' }}</h2>
+        <p>{{ loginData.userType === 'PATIENT' ? 'Access your dental records & book appointments' : 'Dashboard for clinic team and doctors' }}</p>
       </div>
 
-      <div class="form-group">
-        <label for="username">Phone / Username</label>
-        <input type="text" id="username" name="username" [(ngModel)]="loginData.username" required placeholder="Enter your username">
-      </div>
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
+        <div class="form-group" *ngIf="isSignupMode && loginData.userType === 'PATIENT'">
+          <label for="fullName">Full Name</label>
+          <div class="input-wrapper">
+            <input type="text" id="fullName" name="fullName" [(ngModel)]="loginData.fullName" [required]="isSignupMode" placeholder="Enter full name">
+          </div>
+        </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required placeholder="Enter your password">
-      </div>
+        <div class="form-group">
+          <label for="username">Phone / Username</label>
+          <div class="input-wrapper">
+            <input type="text" id="username" name="username" [(ngModel)]="loginData.username" required placeholder="{{ loginData.userType === 'PATIENT' ? 'Mobile number' : 'Employee ID' }}">
+          </div>
+        </div>
 
-      <div class="error-msg" *ngIf="errorMessage">
-        {{ errorMessage }}
-      </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required placeholder="Secret key">
+          </div>
+        </div>
 
-      <button type="submit" class="submit-btn" [disabled]="!loginForm.form.valid">
-        {{ isSignupMode ? 'Create Account' : 'Secure Login' }}
-      </button>
+        <div class="error-msg" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
 
-      <div class="toggle-mode" *ngIf="loginData.userType === 'PATIENT'">
-        <a href="javascript:void(0)" (click)="toggleMode()">
-          {{ isSignupMode ? 'Already have an account? Login here' : 'New Patient? Sign up here' }}
-        </a>
+        <button type="submit" class="submit-btn" [disabled]="!loginForm.form.valid">
+          {{ isSignupMode ? 'Register Now' : (loginData.userType === 'PATIENT' ? 'Patient Sign In' : 'Staff Secure Login') }}
+        </button>
+
+        <div class="toggle-mode" *ngIf="loginData.userType === 'PATIENT'">
+          <a href="javascript:void(0)" (click)="toggleMode()">
+            {{ isSignupMode ? 'Already a patient? Sign In' : 'New here? Register a direct profile' }}
+          </a>
+        </div>
+
+        <div class="staff-toggle">
+          <p *ngIf="loginData.userType === 'PATIENT'">Are you a staff member? <a (click)="setRole('STAFF')">Login to Staff Portal</a></p>
+          <p *ngIf="loginData.userType === 'STAFF'">Wait, I'm a patient. <a (click)="setRole('PATIENT')">Go to Patient Login</a></p>
+        </div>
+      </form>
+      
+      <div class="login-footer">
+        <p>SAySmile Enterprise Grade Security</p>
       </div>
-    </form>
-    
-    <div class="footer-hint">
-      Authorized personnel only. Data protected by 256-bit AES encryption.
     </div>
   </div>
 </div>

@@ -15,7 +15,7 @@ export class Login {
     username: '',
     password: '',
     fullName: '',
-    userType: 'STAFF'
+    userType: 'PATIENT'
   };
 
   isSignupMode = false;
