@@ -1,0 +1,14 @@
+# Git
+.git
+.gitignore
+
+# Maven output — builder stage handles this fresh
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# docs
+*.md

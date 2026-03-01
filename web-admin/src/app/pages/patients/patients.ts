@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-patients',
@@ -29,7 +30,7 @@ export class Patients implements OnInit {
   }
 
   loadPatients() {
-    this.http.get<any[]>('http://localhost:8080/api/patients').subscribe({
+    this.http.get<any[]>(`${environment.apiBaseUrl}/api/patients`).subscribe({
       next: (data) => this.patients = data,
       error: (err) => console.error('Error fetching patients', err)
     });
@@ -41,7 +42,7 @@ export class Patients implements OnInit {
 
   addPatient() {
     // We send this to signup endpoint since it handles creating both User and Patient entities
-    this.http.post('http://localhost:8080/api/auth/signup', this.newPatient).subscribe({
+    this.http.post(`${environment.apiBaseUrl}/api/auth/signup`, this.newPatient).subscribe({
       next: () => {
         this.loadPatients();
         this.showForm = false;
@@ -53,7 +54,7 @@ export class Patients implements OnInit {
 
   deletePatient(id: number) {
     if (confirm('Are you sure you want to delete this patient record?')) {
-      this.http.delete(`http://localhost:8080/api/patients/${id}`).subscribe({
+      this.http.delete(`${environment.apiBaseUrl}/api/patients/${id}`).subscribe({
         next: () => this.loadPatients(),
         error: (err) => console.error('Error deleting patient', err)
       });

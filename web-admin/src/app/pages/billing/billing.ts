@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-billing',
@@ -30,7 +31,7 @@ export class Billing implements OnInit {
   }
 
   loadInvoices() {
-    this.http.get<any[]>('http://localhost:8080/api/invoices').subscribe({
+    this.http.get<any[]>(`${environment.apiBaseUrl}/api/invoices`).subscribe({
       next: (data) => this.invoices = data,
       error: (err) => console.error('Error fetching invoices', err)
     });
@@ -44,7 +45,7 @@ export class Billing implements OnInit {
     // Basic calculation
     this.newInvoice.totalAmount = this.newInvoice.subTotal + this.newInvoice.cgst + this.newInvoice.sgst;
     
-    this.http.post('http://localhost:8080/api/invoices', this.newInvoice).subscribe({
+    this.http.post(`${environment.apiBaseUrl}/api/invoices`, this.newInvoice).subscribe({
       next: () => {
         this.loadInvoices();
         this.showForm = false;

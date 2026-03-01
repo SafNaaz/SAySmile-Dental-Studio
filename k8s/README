@@ -1,0 +1,25 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# SAySmile Dental Studio — Kubernetes Manifests
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# STRUCTURE:
+#   00-namespace.yaml        - Isolated namespace
+#   01-secrets.yaml          - DB password, Redis password, LDAP password
+#   02-postgres.yaml         - StatefulSet + Service for PostgreSQL
+#   03-redis.yaml            - Deployment + Service for Redis
+#   04-ldap.yaml             - Deployment + Service for OpenLDAP
+#   05-backend.yaml          - Deployment + Service for Spring Boot API
+#   06-web-admin.yaml        - Deployment + Service for Angular Nginx
+#   07-ingress.yaml          - Ingress (nginx-ingress-controller) for external routing
+#
+# USAGE:
+#   kubectl apply -f k8s/
+#
+# PREREQUISITES:
+#   - kubectl connected to your cluster
+#   - nginx ingress controller installed: https://kubernetes.github.io/ingress-nginx
+#   - Docker images pushed to a registry (update image: fields below)
+#
+# IMAGE TAGS (update before deploying):
+#   BACKEND_IMAGE  : your-registry/saysmile-backend:latest
+#   WEB_ADMIN_IMAGE: your-registry/saysmile-web-admin:latest

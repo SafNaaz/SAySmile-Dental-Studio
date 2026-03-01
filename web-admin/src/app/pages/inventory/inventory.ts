@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-inventory',
@@ -26,7 +27,7 @@ export class Inventory implements OnInit {
   }
 
   loadInventory() {
-    this.http.get<any[]>('http://localhost:8080/api/inventory').subscribe({
+    this.http.get<any[]>(`${environment.apiBaseUrl}/api/inventory`).subscribe({
       next: (data) => this.inventory = data,
       error: (err) => console.error('Error fetching inventory', err)
     });
@@ -37,7 +38,7 @@ export class Inventory implements OnInit {
   }
 
   addItem() {
-    this.http.post('http://localhost:8080/api/inventory', this.newItem).subscribe({
+    this.http.post(`${environment.apiBaseUrl}/api/inventory`, this.newItem).subscribe({
       next: () => {
         this.loadInventory();
         this.showForm = false;
@@ -49,7 +50,7 @@ export class Inventory implements OnInit {
 
   deleteItem(id: number) {
     if (confirm('Are you sure you want to delete this item?')) {
-      this.http.delete(`http://localhost:8080/api/inventory/${id}`).subscribe({
+      this.http.delete(`${environment.apiBaseUrl}/api/inventory/${id}`).subscribe({
         next: () => this.loadInventory(),
         error: (err) => console.error('Error deleting item', err)
       });

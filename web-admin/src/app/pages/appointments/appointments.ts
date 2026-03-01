@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-appointments',
@@ -36,14 +37,14 @@ export class Appointments implements OnInit {
   }
 
   loadPatients() {
-    this.http.get<any[]>('http://localhost:8080/api/patients').subscribe({
+    this.http.get<any[]>(`${environment.apiBaseUrl}/api/patients`).subscribe({
       next: (data) => this.patients = data,
       error: (err) => console.error('Error fetching patients', err)
     });
   }
 
   loadAppointments() {
-    this.http.get<any[]>('http://localhost:8080/api/appointments').subscribe({
+    this.http.get<any[]>(`${environment.apiBaseUrl}/api/appointments`).subscribe({
       next: (data) => this.appointments = data,
       error: (err) => console.error('Error fetching appointments', err)
     });
@@ -55,7 +56,7 @@ export class Appointments implements OnInit {
 
   bookAppointment() {
     if (this.editMode && this.editAppointmentId) {
-      this.http.put(`http://localhost:8080/api/appointments/${this.editAppointmentId}`, this.newAppointment).subscribe({
+      this.http.put(`${environment.apiBaseUrl}/api/appointments/${this.editAppointmentId}`, this.newAppointment).subscribe({
         next: () => {
           this.loadAppointments();
           this.resetForm();
@@ -63,7 +64,7 @@ export class Appointments implements OnInit {
         error: (err) => console.error('Error updating appointment', err)
       });
     } else {
-      this.http.post('http://localhost:8080/api/appointments', this.newAppointment).subscribe({
+      this.http.post(`${environment.apiBaseUrl}/api/appointments`, this.newAppointment).subscribe({
         next: () => {
           this.loadAppointments();
           this.resetForm();
@@ -89,7 +90,7 @@ export class Appointments implements OnInit {
 
   cancelAppointment(id: number) {
     if (confirm('Are you sure you want to cancel this appointment?')) {
-      this.http.delete(`http://localhost:8080/api/appointments/${id}`).subscribe({
+      this.http.delete(`${environment.apiBaseUrl}/api/appointments/${id}`).subscribe({
         next: () => this.loadAppointments(),
         error: (err) => console.error('Error cancelling appointment', err)
       });

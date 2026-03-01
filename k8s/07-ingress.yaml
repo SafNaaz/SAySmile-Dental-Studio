@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: saysmile-ingress
+  namespace: saysmile
+  annotations:
+    # nginx ingress controller annotations
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    # TLS redirect (enable once cert-manager is set up)
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    # ── Web Admin (Angular Dashboard) ────────────────────────────────────────
+    - host: admin.saysmile.local   # Change to your real domain e.g. admin.saysmile.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-admin-svc
+                port:
+                  number: 80
+
+    # ── Backend REST API (Direct external access if needed, e.g. mobile app) ─
+    - host: api.saysmile.local     # Change to your real domain e.g. api.saysmile.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-svc
+                port:
+                  number: 8080
+
+  # ── TLS (Uncomment and configure cert-manager / your cert Secret) ──────────
+  # tls:
+  #   - hosts:
+  #       - admin.saysmile.local
+  #       - api.saysmile.local
+  #     secretName: saysmile-tls-cert

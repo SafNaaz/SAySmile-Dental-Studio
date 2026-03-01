@@ -1,0 +1,17 @@
+# Git
+.git
+.gitignore
+
+# Node modules — docker build copies package.json and runs npm ci fresh
+node_modules/
+
+# Angular dev output
+dist/
+.angular/
+
+# IDE files
+.vscode/
+.idea/
+
+# Docs
+*.md

@@ -1,7 +1,8 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database - For core data (Patients, Appointments, Billing, Inventory, Analytics)
+  # ─── Infrastructure ──────────────────────────────────────────────────────────
+
   postgres:
     image: postgres:15-alpine
     container_name: saysmile-postgres
@@ -13,9 +14,13 @@ services:
       - "5433:5432"
     volumes:
       - saysmile-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U saysmile_admin -d saysmile_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
-  # Redis - For caching, fast WhatsApp bot responses, and session management
   redis:
     image: redis:7-alpine
     container_name: saysmile-redis
@@ -23,9 +28,13 @@ services:
       - "6380:6379"
     volumes:
       - saysmile-redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
-  # OpenLDAP - For secure clinic employee and doctor authentication/RBAC
   ldap:
     image: osixia/openldap:latest
     container_name: saysmile-ldap
@@ -41,7 +50,6 @@ services:
       - saysmile-ldapconfig:/etc/ldap/slapd.d
     restart: unless-stopped
 
-  # phpLDAPadmin - Web UI to manage LDAP users (You and Your Wife will be Super Admins here)
   phpldapadmin:
     image: osixia/phpldapadmin:latest
     container_name: saysmile-phpldapadmin
@@ -54,7 +62,6 @@ services:
       - ldap
     restart: unless-stopped
 
-  # pgAdmin - Web UI for Safnas (Tech Side) to view/manage PostgreSQL Data
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: saysmile-pgadmin
@@ -64,17 +71,57 @@ services:
     ports:
       - "5050:80"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
-  # RedisInsight - Web UI for Safnas to view Redis Cache (WhatsApp sessions, queues)
   redisinsight:
     image: redis/redisinsight:latest
     container_name: saysmile-redisinsight
     ports:
       - "5540:5540"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─── Application Services ────────────────────────────────────────────────────
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: saysmile-backend
+    environment:
+      # Point to sibling docker-compose services (standard port 5432/6379 inside network)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/saysmile_db
+      SPRING_DATASOURCE_USERNAME: saysmile_admin
+      SPRING_DATASOURCE_PASSWORD: saysmile_password
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_LDAP_URLS: ldap://ldap:389
+      SPRING_LDAP_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web-admin:
+    build:
+      context: ./web-admin
+      dockerfile: Dockerfile
+    container_name: saysmile-web-admin
+    environment:
+      # Nginx will proxy /api/* to this internal service name
+      BACKEND_HOST: backend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
     restart: unless-stopped
 
 volumes:

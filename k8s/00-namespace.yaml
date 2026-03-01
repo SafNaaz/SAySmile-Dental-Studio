@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: saysmile
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    project: saysmile-dental

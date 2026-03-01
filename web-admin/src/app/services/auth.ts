@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class AuthService {
   }
 
   login(credentials: any) {
-    return this.http.post<any>('http://localhost:8080/api/auth/login', credentials).pipe(
+    return this.http.post<any>(`${environment.apiBaseUrl}/api/auth/login`, credentials).pipe(
       tap(res => {
         if (res && res.token) {
           localStorage.setItem('saysmile_user', JSON.stringify(res));
@@ -33,7 +34,7 @@ export class AuthService {
   }
 
   signup(data: any) {
-    return this.http.post<any>('http://localhost:8080/api/auth/signup', data).pipe(
+    return this.http.post<any>(`${environment.apiBaseUrl}/api/auth/signup`, data).pipe(
       tap(res => {
         if (res && res.token) {
           localStorage.setItem('saysmile_user', JSON.stringify(res));
@@ -47,7 +48,7 @@ export class AuthService {
   logout() {
     const user = this.currentUserSubject.value;
     if (user && user.username) {
-      this.http.post('http://localhost:8080/api/auth/logout', { username: user.username }).subscribe();
+      this.http.post(`${environment.apiBaseUrl}/api/auth/logout`, { username: user.username }).subscribe();
     }
     localStorage.removeItem('saysmile_user');
     this.currentUserSubject.next(null);
