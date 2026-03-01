@@ -1,0 +1,39 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>💳 Billing & Invoices</h1>
+    <button class="primary-btn">+ Create Invoice</button>
+  </div>
+
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Invoice #</th>
+          <th>Date</th>
+          <th>Patient Name</th>
+          <th>Tax (CGST+SGST)</th>
+          <th>Total Amount</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let invoice of invoices">
+          <td><strong>#INV-2026-{{ invoice.id | number:'3.0' }}</strong></td>
+          <td>{{ invoice.createdAt | date:'mediumDate' }}</td>
+          <td>{{ invoice.patient?.user?.fullName }}</td>
+          <td>₹{{ invoice.cgst + invoice.sgst }}</td>
+          <td><strong style="color: #0f172a;">₹{{ invoice.totalAmount }}</strong></td>
+          <td><span class="status-badge" [ngClass]="invoice.paymentStatus.toLowerCase()">{{ invoice.paymentStatus }}</span></td>
+          <td>
+            <button class="action-btn view">Print</button>
+            <button class="action-btn edit">Email</button>
+          </td>
+        </tr>
+        <tr *ngIf="invoices.length === 0">
+          <td colspan="7" class="empty-state">No invoices generated yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

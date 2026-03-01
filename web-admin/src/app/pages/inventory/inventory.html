@@ -1,0 +1,43 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>📦 Clinical Inventory</h1>
+    <button class="primary-btn">+ Add Item</button>
+  </div>
+
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Item Code</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Stock Quantity</th>
+          <th>Alert Threshold</th>
+          <th>Cost / Unit</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of inventory">
+          <td>#INV-{{ item.id }}</td>
+          <td><strong>{{ item.name }}</strong></td>
+          <td><span class="issue-badge">{{ item.category }}</span></td>
+          <td>
+            <span [ngStyle]="{'color': item.stockQuantity <= item.minimumThreshold ? '#ef4444' : '#10b981', 'font-weight': '600'}">
+              {{ item.stockQuantity }} units
+            </span>
+          </td>
+          <td>{{ item.minimumThreshold }} units</td>
+          <td>₹{{ item.costPerUnit }}</td>
+          <td>
+            <button class="action-btn view">Order More</button>
+            <button class="action-btn edit">Update</button>
+          </td>
+        </tr>
+        <tr *ngIf="inventory.length === 0">
+          <td colspan="7" class="empty-state">Inventory is empty.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

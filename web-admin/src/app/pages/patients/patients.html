@@ -1,0 +1,39 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>👥 Patients Directory</h1>
+    <button class="primary-btn">+ Add Patient</button>
+  </div>
+
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Phone / Username</th>
+          <th>Gender</th>
+          <th>Dental Issues</th>
+          <th>DOB</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let patient of patients">
+          <td>#{{ patient.id }}</td>
+          <td><strong>{{ patient.user.fullName }}</strong></td>
+          <td>{{ patient.user.phone || patient.user.username }}</td>
+          <td>{{ patient.gender }}</td>
+          <td><span class="issue-badge">{{ patient.primaryDentalIssues }}</span></td>
+          <td>{{ patient.dateOfBirth || 'N/A' }}</td>
+          <td>
+            <button class="action-btn view">View</button>
+            <button class="action-btn edit">Edit</button>
+          </td>
+        </tr>
+        <tr *ngIf="patients.length === 0">
+          <td colspan="7" class="empty-state">No patients found. Add some!</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

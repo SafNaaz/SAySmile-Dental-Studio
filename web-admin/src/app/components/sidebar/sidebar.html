@@ -1,0 +1,38 @@
+<nav class="sidebar-nav">
+  <div class="logo">
+    <span class="logo-icon">🦷</span>
+    <span class="logo-text">SAySmile</span>
+  </div>
+  
+  <ul class="nav-links">
+    <li>
+      <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <span>📊</span> Dashboard
+      </a>
+    </li>
+    <li>
+      <a routerLink="/patients" routerLinkActive="active">
+        <span>👥</span> Patients
+      </a>
+    </li>
+    <li>
+      <a routerLink="/appointments" routerLinkActive="active">
+        <span>📅</span> Appointments
+      </a>
+    </li>
+    <li>
+      <a routerLink="/inventory" routerLinkActive="active">
+        <span>📦</span> Inventory
+      </a>
+    </li>
+    <li>
+      <a routerLink="/billing" routerLinkActive="active">
+        <span>💳</span> Billing & Invoices
+      </a>
+    </li>
+  </ul>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn">Logout</button>
+  </div>
+</nav>

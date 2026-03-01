@@ -1,0 +1,37 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>📅 Appointments</h1>
+    <button class="primary-btn">+ Book Appointment</button>
+  </div>
+
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Patient</th>
+          <th>Doctor</th>
+          <th>Procedure</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let appt of appointments">
+          <td>{{ appt.appointmentTime | date:'MMM d, y, h:mm a' }}</td>
+          <td><strong>{{ appt.patient?.user?.fullName }}</strong></td>
+          <td>{{ appt.doctor?.fullName }}</td>
+          <td>{{ appt.procedureType }}</td>
+          <td><span class="status-badge" [ngClass]="appt.status.toLowerCase()">{{ appt.status }}</span></td>
+          <td>
+            <button class="action-btn edit">Reschedule</button>
+            <button class="action-btn delete">Cancel</button>
+          </td>
+        </tr>
+        <tr *ngIf="appointments.length === 0">
+          <td colspan="6" class="empty-state">No appointments booked yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
