@@ -1,0 +1,64 @@
+<main class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>🦷 {{ title }}</h1>
+    <div class="user-info">
+      <span class="role-badge super-admin">Super Admin</span>
+      <span>Dr. Aysha & Er. Safnas</span>
+    </div>
+  </header>
+
+  <div class="content" *ngIf="dashboardData; else loading">
+    
+    <!-- Top Stats Row -->
+    <div class="stats-grid">
+      <div class="stat-card revenue">
+        <h3>Monthly Revenue</h3>
+        <p class="stat-value">₹ {{ dashboardData.monthlyRevenue | number:'1.2-2' }}</p>
+      </div>
+      
+      <div class="stat-card">
+        <h3>Total Patients</h3>
+        <p class="stat-value">1,204</p>
+        <p class="stat-subtitle">+12% from last month</p>
+      </div>
+
+      <div class="stat-card alert">
+        <h3>Inventory Alerts</h3>
+        <p class="stat-value">3 items</p>
+        <p class="stat-subtitle">Low stock detected</p>
+      </div>
+    </div>
+
+    <!-- Charts & Analytics Row -->
+    <div class="analytics-grid">
+      <div class="chart-container">
+        <h2>Pathology & Disease Trends</h2>
+        <div class="chart-placeholder" *ngIf="dashboardData.procedureTrends?.length === 0">
+          <p>No procedure data available yet. Add some appointments!</p>
+        </div>
+        <ul class="trend-list" *ngIf="dashboardData.procedureTrends?.length > 0">
+          <li *ngFor="let trend of dashboardData.procedureTrends">
+            <span class="trend-name">{{ trend[0] }}</span>
+            <span class="trend-count">{{ trend[1] }} procedures</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="chart-container">
+        <h2>Upcoming Appointments Today</h2>
+        <div class="chart-placeholder">
+          <p>No appointments scheduled today.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <div class="loading-state">
+      <p>Loading Clinic Analytics...</p>
+    </div>
+  </ng-template>
+
+</main>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database - For core data (Patients, Appointments, Billing, Inventory, Analytics)
+  postgres:
+    image: postgres:15-alpine
+    container_name: saysmile-postgres
+    environment:
+      POSTGRES_USER: saysmile_admin
+      POSTGRES_PASSWORD: saysmile_password
+      POSTGRES_DB: saysmile_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - saysmile-pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Redis - For caching, fast WhatsApp bot responses, and session management
+  redis:
+    image: redis:7-alpine
+    container_name: saysmile-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - saysmile-redisdata:/data
+    restart: unless-stopped
+
+  # OpenLDAP - For secure clinic employee and doctor authentication/RBAC
+  ldap:
+    image: osixia/openldap:latest
+    container_name: saysmile-ldap
+    environment:
+      LDAP_ORGANISATION: "SAySmile Dental Studio"
+      LDAP_DOMAIN: "saysmile.local"
+      LDAP_ADMIN_PASSWORD: "admin"
+    ports:
+      - "389:389"
+      - "636:636"
+    volumes:
+      - saysmile-ldapdata:/var/lib/ldap
+      - saysmile-ldapconfig:/etc/ldap/slapd.d
+    restart: unless-stopped
+
+  # phpLDAPadmin - Web UI to manage LDAP users (You and Your Wife will be Super Admins here)
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    container_name: saysmile-phpldapadmin
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: "ldap"
+      PHPLDAPADMIN_HTTPS: "false"
+    ports:
+      - "6443:80"
+    depends_on:
+      - ldap
+    restart: unless-stopped
+
+  # pgAdmin - Web UI for Safnas (Tech Side) to view/manage PostgreSQL Data
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: saysmile-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: safnas@saysmile.com
+      PGADMIN_DEFAULT_PASSWORD: saysmile_admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  # RedisInsight - Web UI for Safnas to view Redis Cache (WhatsApp sessions, queues)
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: saysmile-redisinsight
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+volumes:
+  saysmile-pgdata:
+  saysmile-redisdata:
+  saysmile-ldapdata:
+  saysmile-ldapconfig:
