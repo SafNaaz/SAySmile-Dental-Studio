@@ -5,6 +5,9 @@
 
 set -e
 
+# Always run from the project root
+cd "$(dirname "$0")/.."
+
 echo "🐳 Stopping existing containers..."
 #sg docker -c "docker compose down -v"
 sg docker -c "docker compose down"

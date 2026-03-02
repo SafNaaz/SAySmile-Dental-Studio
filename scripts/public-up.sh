@@ -5,6 +5,9 @@
 
 set -e
 
+# Always run from the project root
+cd "$(dirname "$0")/.."
+
 # 1. Check for cloudflared
 if ! command -v cloudflared &> /dev/null; then
   echo "⚠️ cloudflared not found. Installing..."

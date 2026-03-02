@@ -5,14 +5,24 @@
 
 set -e
 
-echo "🚀 Building backend (v3)..."
-sg docker -c "docker build -t saysmile/backend:v3 ./backend/ -q"
+# Always run from the project root
+cd "$(dirname "$0")/.."
+
+#echo "🛑 Stopping all deployments..."
+#sg docker -c "kubectl delete deployment,statefulset --all -n saysmile"
+
+#echo "🗑️  Deleting all data volumes (PVCs)..."
+#sg docker -c "kubectl delete pvc --all -n saysmile"
+
+
+echo "🚀 Building backend (latest)..."
+sg docker -c "docker build -t saysmile/backend:latest ./backend/ -q"
 
 echo "🚀 Building web-admin (latest)..."
 sg docker -c "docker build -t saysmile/web-admin:latest ./web-admin/ -q"
 
 echo "📦 Loading images into Minikube..."
-sg docker -c "minikube image load saysmile/backend:v3"
+sg docker -c "minikube image load saysmile/backend:latest"
 sg docker -c "minikube image load saysmile/web-admin:latest"
 
 echo "🚢 Applying Kubernetes manifests..."
