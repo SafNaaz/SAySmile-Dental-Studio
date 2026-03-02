@@ -143,3 +143,9 @@ If it's your first time running, you need to link Prometheus to Grafana:
    - Go to **Dashboards** -> **New** -> **Import**.
    - Enter ID `4701` or `6756` and click **Load**.
    - Select the **Prometheus** data source you just created.
+
+
+
+logs:
+
+sg docker -c "kubectl logs -l app=backend -n saysmile --tail=100"
