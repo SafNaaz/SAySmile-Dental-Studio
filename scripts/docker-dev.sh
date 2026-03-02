@@ -24,3 +24,6 @@ echo "✅ Local Docker environment running at: http://localhost:4200 ("admin" UI
 echo "✅ Backend API running at: http://localhost:8080"
 echo "✅ phpLDAPadmin running at: http://localhost:6443"
 echo "✅ pgAdmin running at: http://localhost:5050"
+echo "✅ Grafana running at: http://localhost:3000 (admin / admin)"
+echo "✅ Prometheus running at: http://localhost:9090"
+echo "✅ RedisInsight running at: http://localhost:5540"

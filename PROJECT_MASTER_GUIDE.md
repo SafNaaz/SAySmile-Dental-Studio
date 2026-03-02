@@ -28,6 +28,23 @@ The entire system is running on **Kubernetes (Minikube)** with high availability
 | **pgAdmin** | [db.saysmile.local](http://db.saysmile.local) | Manage PostgreSQL database |
 | **phpLDAPadmin** | [directory.saysmile.local](http://directory.saysmile.local) | Manage User Directory (LDAP) |
 | **RedisInsight** | [cache.saysmile.local](http://cache.saysmile.local) | Inspect Redis cache/tokens |
+| **Grafana (Local)** | [localhost:3000](http://localhost:3000) | Local dev monitoring |
+
+---
+
+## 2. 🐳 Docker Compose Quick Reference (Local Dev)
+Use this when running `./scripts/docker-dev.sh`.
+
+| Service | URL | Credentials / Notes |
+|---|---|---|
+| **Admin UI** | [localhost:4200](http://localhost:4200) | Login using LDAP or Seeded users |
+| **Backend API** | [localhost:8080](http://localhost:8080) | REST Endpoints & Health |
+| **pgAdmin** | [localhost:5050](http://localhost:5050) | `safnas@saysmile.com` / `saysmile_admin` |
+| **phpLDAPadmin** | [localhost:6443](http://localhost:6443) | DN: `cn=admin,dc=saysmile,dc=local` / `admin` |
+| **Grafana** | [localhost:3000](http://localhost:3000) | `admin` / `admin` |
+| **Prometheus** | [localhost:9090](http://localhost:9090) | Scrapes `/actuator/prometheus` |
+| **RedisInsight** | [localhost:5540](http://localhost:5540) | Host: `redis`, Port: `6379` |
+| **PostgreSQL** | `localhost:5433` | `saysmile_admin` / `saysmile_password` |
 
 ---
 
@@ -115,3 +132,14 @@ Maintenance database: saysmile_db
 Username: saysmile_admin
 Password: saysmile_password
 Click Save.
+### 📈 How to Setup Grafana (Local Dev)
+If it's your first time running, you need to link Prometheus to Grafana:
+1. Open [http://localhost:3000](http://localhost:3000) (User: `admin`, Pass: `admin`).
+2. Go to **Connections** -> **Data Sources**.
+3. Click **Add new data source** -> Select **Prometheus**.
+4. Set **URL** to: `http://prometheus:9090` (this is the internal Docker name).
+5. Scroll down and click **Save & Test**.
+6. **(Optional)** To see JVM/Spring stats:
+   - Go to **Dashboards** -> **New** -> **Import**.
+   - Enter ID `4701` or `6756` and click **Load**.
+   - Select the **Prometheus** data source you just created.
