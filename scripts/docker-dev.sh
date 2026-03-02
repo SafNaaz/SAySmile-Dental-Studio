@@ -6,7 +6,8 @@
 set -e
 
 echo "🐳 Stopping existing containers..."
-sg docker -c "docker compose down -v"
+#sg docker -c "docker compose down -v"
+sg docker -c "docker compose down"
 
 echo "🚀 Building backend & frontend..."
 sg docker -c "docker compose build"
