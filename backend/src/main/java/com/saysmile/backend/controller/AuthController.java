@@ -33,54 +33,62 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        String username = request.getUsername();
+        String password = request.getPassword();
+        System.out.println("Processing login for user: " + username + " (Type: " + request.getUserType() + ")");
+
         if ("STAFF".equalsIgnoreCase(request.getUserType())) {
-            // Wait, we skip real LDAP validation if it's the dummy doctor without LDAP
-            // entry
-            // but for real implementation, we'd use ldapTemplate.authenticate() here.
-            // Let's do a hardcoded backdoor for "aysha@saysmile.com" or attempt LDAP:
+            // 1. Try LDAP Authentication first
             try {
-                if ("aysha@saysmile.com".equals(request.getUsername()) && "pass".equals(request.getPassword())) {
-                    User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-                    return performLogin(user);
-                }
+                ldapTemplate.authenticate(
+                        LdapQueryBuilder.query().where("uid").is(username),
+                        password);
 
-                // Actual LDAP logic
-                try {
-                    ldapTemplate.authenticate(
-                            LdapQueryBuilder.query().where("uid").is(request.getUsername()),
-                            request.getPassword());
+                System.out.println("LDAP Authentication successful for: " + username);
 
-                    User user = userRepository.findByUsername(request.getUsername()).orElseGet(() -> {
-                        // Create a skeleton user for the external LDAP staff member
-                        return userRepository.save(User.builder()
-                                .username(request.getUsername())
-                                .role(Role.FRONT_DESK) // default, can sync from LDAP group
-                                .fullName("Staff User")
-                                .build());
-                    });
-                    return performLogin(user);
-                } catch (Exception ldapEx) {
-                    // Ignore LDAP error in case it's not seeded and fallback to DB for our seeded
-                    // doctors
-                }
-            } catch (Exception e) {
-                // Ignore LDAP error in case it's not seeded and fallback to DB for our seeded
-                // doctors
+                User user = userRepository.findByUsername(username).orElseGet(() -> {
+                    System.out.println("User not found in local DB. Provisioning from LDAP: " + username);
+                    return ldapTemplate.search(
+                            LdapQueryBuilder.query().where("uid").is(username),
+                            (org.springframework.ldap.core.AttributesMapper<User>) attrs -> {
+                                String roleStr = (String) attrs.get("employeeType").get();
+                                String fullName = attrs.get("cn") != null ? (String) attrs.get("cn").get()
+                                        : "Staff User";
+                                Role role = Role.FRONT_DESK;
+                                try {
+                                    role = Role.valueOf(roleStr);
+                                } catch (Exception e) {
+                                    System.err.println(
+                                            "Invalid role in LDAP: " + roleStr + ". Defaulting to FRONT_DESK.");
+                                }
+                                return userRepository.save(User.builder()
+                                        .username(username)
+                                        .role(role)
+                                        .fullName(fullName)
+                                        .email(username)
+                                        .build());
+                            }).get(0);
+                });
+                return performLogin(user);
+            } catch (Exception ldapEx) {
+                System.out.println("LDAP Authentication failed for: " + username + " - " + ldapEx.getMessage());
             }
 
-            // Fallback DB auth for staff (since we seeded Dr. Aysha to DB)
-            Optional<User> userOpt = userRepository.findByUsername(request.getUsername());
-            if (userOpt.isPresent() && userOpt.get().getPassword().equals(request.getPassword())
-                    && userOpt.get().getRole() != Role.PATIENT) {
+            // 2. Fallback DB auth
+            Optional<User> userOpt = userRepository.findByUsername(username);
+            if (userOpt.isPresent() && userOpt.get().getPassword() != null &&
+                    userOpt.get().getPassword().equals(password) &&
+                    userOpt.get().getRole() != Role.PATIENT) {
                 return performLogin(userOpt.get());
             }
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         } else {
-            // Patient login via DB
-            Optional<User> userOpt = userRepository.findByUsername(request.getUsername());
-            if (userOpt.isPresent() && userOpt.get().getPassword().equals(request.getPassword())
-                    && userOpt.get().getRole() == Role.PATIENT) {
+            // Patient login
+            Optional<User> userOpt = userRepository.findByUsername(username);
+            if (userOpt.isPresent() && userOpt.get().getPassword() != null &&
+                    userOpt.get().getPassword().equals(password) &&
+                    userOpt.get().getRole() == Role.PATIENT) {
                 return performLogin(userOpt.get());
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");

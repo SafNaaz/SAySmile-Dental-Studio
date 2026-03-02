@@ -18,13 +18,13 @@
       
       <div class="stat-card">
         <h3>Total Patients</h3>
-        <p class="stat-value">1,204</p>
-        <p class="stat-subtitle">+12% from last month</p>
+        <p class="stat-value">{{ dashboardData.totalPatients || 0 }}</p>
+        <p class="stat-subtitle">Registered Patients</p>
       </div>
 
       <div class="stat-card alert" *ngIf="authService.hasAnyRole(['SUPER_ADMIN', 'DOCTOR', 'HR'])">
         <h3>Inventory Alerts</h3>
-        <p class="stat-value">3 items</p>
+        <p class="stat-value">{{ dashboardData.lowStockCount || 0 }} items</p>
         <p class="stat-subtitle">Low stock detected</p>
       </div>
     </div>

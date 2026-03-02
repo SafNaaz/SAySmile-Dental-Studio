@@ -99,3 +99,19 @@ A: Use `./scripts/k8s-up.sh`. It forces a rebuild and a `rollout restart` to ens
 
 **Q: "How do I see logs in Grafana?"**
 A: Log in to Grafana -> **Explore** -> Source: **Loki** -> Label filter: `{app="backend"}`.
+
+
+To log in to pgAdmin at http://localhost:5050, use these exact credentials:
+
+Email: safnas@saysmile.com
+Password: saysmile_admin
+Once you are logged in, to connect to the Database:
+Right-click Servers > Register > Server.
+General Tab: Name it "SAySmile DB".
+Connection Tab:
+Host: postgres (use this internal name, not localhost)
+Port: 5432
+Maintenance database: saysmile_db
+Username: saysmile_admin
+Password: saysmile_password
+Click Save.

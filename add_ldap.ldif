@@ -1,0 +1,33 @@
+dn: uid=aysha@saysmile.com,dc=saysmile,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: aysha@saysmile.com
+sn: Safnas
+givenName: Aysha
+cn: Aysha Safnas
+displayName: Dr. Aysha
+mail: aysha@saysmile.com
+uidNumber: 1000
+gidNumber: 1000
+userPassword: pass
+homeDirectory: /home/aysha
+loginShell: /bin/bash
+employeeType: DOCTOR
+
+dn: uid=safnas@saysmile.com,dc=saysmile,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: safnas@saysmile.com
+sn: Safnas
+givenName: Safnas
+cn: Safnas SuperUser
+displayName: Safnas System Admin
+mail: safnas@saysmile.com
+uidNumber: 1001
+gidNumber: 1001
+userPassword: pass
+homeDirectory: /home/safnas
+loginShell: /bin/bash
+employeeType: SUPER_ADMIN
